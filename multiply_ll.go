@@ -8,12 +8,10 @@ import (
 type Node struct {
     data int
     next *Node
-    prev *Node
 }
 
 type List struct {
     head *Node
-    tail *Node
 }
 
 func (this *List) add(value int) {
@@ -22,7 +20,6 @@ func (this *List) add(value int) {
 
     if this.head == nil {
         this.head = newNodePointer
-        this.tail = this.head
         return
     }
 
@@ -33,23 +30,29 @@ func (this *List) add(value int) {
     }
 
     current.next = newNodePointer
-    current.next.prev = current
-
-    this.tail = current.next
 
     return
 }
 
 func (l *List) asNumber() int {
-    var current *Node = l.tail
+    var current *Node = l.head
     var number int = 0
 
-    var place int = 0
-
+    var length int = 0
     for current != nil {
-        number += current.data * int(math.Pow(10, float64(place)))
-        place += 1
-        current = current.prev
+        current = current.next
+        length += 1
+    }
+
+    current = l.head
+    var index int = 0
+    for current != nil {
+        index += 1
+        place := float64(length - index)
+
+        number += current.data * int(math.Pow(10, place))
+
+        current = current.next
     }
     
 
