@@ -1,14 +1,19 @@
 package main
 
-import ( "fmt" )
+import (
+    "fmt"
+    "math"
+)
 
 type Node struct {
     data int
     next *Node
+    prev *Node
 }
 
 type List struct {
     head *Node
+    tail *Node
 }
 
 func (this *List) add(value int) {
@@ -17,6 +22,7 @@ func (this *List) add(value int) {
 
     if this.head == nil {
         this.head = newNodePointer
+        this.tail = this.head
         return
     }
 
@@ -27,11 +33,30 @@ func (this *List) add(value int) {
     }
 
     current.next = newNodePointer
+    current.next.prev = current
+
+    this.tail = current.next
 
     return
 }
 
-func print (l *List) {
+func (l *List) asNumber() int {
+    var current *Node = l.tail
+    var number int = 0
+
+    var place int = 0
+
+    for current != nil {
+        number += current.data * int(math.Pow(10, float64(place)))
+        place += 1
+        current = current.prev
+    }
+    
+
+    return number
+}
+
+func (l *List) print() {
     current := l.head
 
     fmt.Print("[")
@@ -39,14 +64,30 @@ func print (l *List) {
         fmt.Print(current.data, " ")
         current = current.next
     }
-    fmt.Print("]")
+    fmt.Print("]\n")
 }
 
 func main() {
-    var l List = List{}
-    l.add(1)
-    l.add(2)
-    l.add(3)
+    var n1 List = List{}
+    n1.add(1)
+    n1.add(0)
+    n1.add(0)
+    n1.add(0)
 
-    print(&l)
+    var n2 List = List{}
+    n2.add(0)
+    n2.add(0)
+    n2.add(0)
+    n2.add(1)
+
+    n1.print()
+    n2.print()
+
+    fmt.Print(n1.asNumber())
+    fmt.Print(" x ")
+    fmt.Print(n2.asNumber())
+    fmt.Print(" = ")
+    fmt.Println(n1.asNumber() * n2.asNumber())
+
+    fmt.Println("----end----")
 }
